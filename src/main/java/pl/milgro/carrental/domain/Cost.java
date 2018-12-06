@@ -1,12 +1,12 @@
 package pl.milgro.carrental.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Getter
+@NoArgsConstructor
 @Entity(name = "pricelist")
 public class Cost {
 
@@ -14,10 +14,9 @@ public class Cost {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "costname")
+    @Column(name = "cost_name")
     private String name;
 
-    @Column
     private Double price;
 
     public Cost(String name, Double price) {

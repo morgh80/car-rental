@@ -1,4 +1,4 @@
-package pl.milgro.carrental.model.car;
+package pl.milgro.carrental.model;
 
 import lombok.Getter;
 

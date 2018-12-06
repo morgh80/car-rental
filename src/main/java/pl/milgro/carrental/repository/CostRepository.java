@@ -1,18 +1,20 @@
 package pl.milgro.carrental.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import pl.milgro.carrental.domain.Cost;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface PriceListRepository {
+public interface CostRepository extends JpaRepository<Cost, Long> {
     List<Cost> findAll();
-
-    Cost save(Cost cost);
 
     Optional<Cost> findById(Long id);
 
     Optional<Cost> findByName(String name);
+
+    @Override
+    <S extends Cost> S save(S cost);
 
     void deleteById(Long id);
 

@@ -1,0 +1,34 @@
+-- -- COSTS
+-- INSERT INTO pricelist (id, costname, price) VALUES (1, 'COMPACT_CAR_RATE', 100.00);
+-- INSERT INTO pricelist (id, costname, price) VALUES (2, 'ECONOMY_CAR_RATE', 90.00);
+-- INSERT INTO pricelist (id, costname, price) VALUES (3, 'ELECTRIC_CAR_RATE', 150.00);
+-- INSERT INTO pricelist (id, costname, price) VALUES (4, 'MINI_CAR_RATE', 80.00);
+-- INSERT INTO pricelist (id, costname, price) VALUES (5, 'PREMIUM_CAR_RATE', 160.00);
+-- INSERT INTO pricelist (id, costname, price) VALUES (6, 'STANDARD_CAR_RATE', 110.00);
+-- INSERT INTO pricelist (id, costname, price) VALUES (7, 'NAVIGATION_DAILY_COST', 10.00);
+-- INSERT INTO pricelist (id, costname, price) VALUES (8, 'CHILD_SEAT_DAILY_COST', 15.00);
+-- INSERT INTO pricelist (id, costname, price) VALUES (9, 'FULL_INSURANCE', 1.1);
+-- INSERT INTO pricelist (id, costname, price) VALUES (10, 'BASIC_INSURANCE', 1.2);
+-- INSERT INTO pricelist (id, costname, price) VALUES (11, 'PERSONAL_ACCIDENT_INSURANCE', 1.05);
+-- INSERT INTO pricelist (id, costname, price) VALUES (12, 'PETROL_PRICE', 5.0);
+-- INSERT INTO pricelist (id, costname, price) VALUES (13, 'DIESEL_PRICE', 4.0);
+--
+-- --CARS
+-- INSERT INTO car (id, model, registration_number, price_category, transition, fuel, tank_capacity) VALUES (1, 'AUDI A6', 'WR69870', 'PREMIUM', 'AUTOMATIC', 'DIESEL', 55);
+-- INSERT INTO car (id, model, registration_number, price_category, transition, fuel, tank_capacity) VALUES (2, 'FORD FOCUS', 'WR12980', 'COMPACT', 'MANUAL', 'PETROL', 42);
+--
+-- --DRIVERS
+-- INSERT INTO driver (id, first_name, last_name, birth_date, address, email, driving_license) VALUES (1, 'Jan', 'Kowalski', '1970-01-01', 'ul. Warszawska, Radom', 'jan@kowalski.com', 'GK0028011');
+-- INSERT INTO driver (id, first_name, last_name, birth_date, address, email, driving_license) VALUES (2, 'Janina', 'Kowalska', '1960-01-01', 'ul. Radomska, Warszawa', 'janina@kowalski.com', 'PI900303');
+--
+-- --INSURANCE
+-- INSERT INTO insurance (id, name) VALUES (1, 'BASIC_INSURANCE');
+-- INSERT INTO insurance (id, name) VALUES (2, 'FULL_INSURANCE');
+--
+-- --RENTAL_ORDER
+-- INSERT INTO rental_order (id, rental_period, car_id, driver_id, insurance_id) VALUES (1, 3, 1, 1, 2);
+--
+-- --ORDER_COSTS
+-- INSERT INTO order_costs (rental_order_id, cost_id) VALUES (1, 1);
+--
+--

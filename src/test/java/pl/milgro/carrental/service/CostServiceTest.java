@@ -1,63 +1,76 @@
 package pl.milgro.carrental.service;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 import pl.milgro.carrental.domain.Cost;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class PriceListServiceTest {
+public class CostServiceTest {
 
     @Autowired
-    private PriceListService priceListService;
+    private CostService costService;
 
     @Test
+    @Transactional
     public void isGettingCostByName() {
         //Given
         Cost testCost = new Cost("Test", 0.0);
-        priceListService.saveCost(testCost);
+        costService.saveCost(testCost);
 
         //When
-        Cost result = priceListService.getCostByName("Test");
+        Cost result = costService.getCostByName("Test");
 
         //Then
         Assert.assertEquals(testCost, result);
     }
 
     @Test
+    @Transactional
     public void isSavingCost() {
         //Given
         Cost testCost = new Cost("Test", 1.05);
 
         //When
-        Cost result = priceListService.saveCost(testCost);
+        Cost result = costService.saveCost(testCost);
 
         //Then
         Assert.assertEquals(testCost, result);
     }
 
     @Test
-    public void isDeletingCostByName() {
+    @Transactional
+    public void isDeletingCostById() {
         //Given
         Cost testCost = new Cost("Test", 1.05);
-        Cost result = priceListService.saveCost(testCost);
+        Cost result = costService.saveCost(testCost);
 
         //When
-        priceListService.deleteByName("Test");
+        costService.deleteById(result.getId());
 
         //Then
-        Assert.assertNull(priceListService.getCostByName("Test"));
+        Assert.assertNull(costService.getCostByName("Test"));
 
     }
 
-    @After
-    public void cleanUp() {
-        priceListService.deleteByName("Test");
+    @Test
+    @Transactional
+    public void isDeletingCostByName() {
+        //Given
+        Cost testCost = new Cost("Test", 1.05);
+        Cost result = costService.saveCost(testCost);
+
+        //When
+        costService.deleteByName(result.getName());
+
+        //Then
+        Assert.assertNull(costService.getCostByName("Test"));
+
     }
 
 }

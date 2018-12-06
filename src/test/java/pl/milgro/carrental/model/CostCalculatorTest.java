@@ -1,4 +1,4 @@
-package pl.milgro.carrental.model.rentalcosts;
+package pl.milgro.carrental.model;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -9,10 +9,17 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 import pl.milgro.carrental.domain.Cost;
-import pl.milgro.carrental.model.car.Car;
-import pl.milgro.carrental.model.car.CarPriceCategory;
-import pl.milgro.carrental.model.rentalcosts.insurance.CarInsurence;
-import pl.milgro.carrental.service.PriceListService;
+import pl.milgro.carrental.domain.CarDriver;
+import pl.milgro.carrental.domain.Car;
+import pl.milgro.carrental.domain.RentalOrder;
+import pl.milgro.carrental.domain.Insurance;
+import pl.milgro.carrental.service.CostService;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 @SpringBootTest
@@ -22,25 +29,27 @@ public class CostCalculatorTest {
     private CostCalculator costCalculator;
 
     @Mock
-    private PriceListService priceListService;
+    private CostService costService;
 
     @Test
     public void isCalculatingRentCost() {
         //Given
         Car audi = new Car("Audi", CarPriceCategory.PREMIUM, "WH6767", Car.Transition.AUTOMATIC,
                 Car.Fuel.PETROL, 50);
-        RentalDetails rd = new RentalDetails(2, CarInsurence.BASIC_INSURANCE,
-                new Cost("NAVIGATION_DAILY_COST", 10.0));
+        CarDriver driver = new CarDriver("Jan", "Kowalski",
+                LocalDate.of(1970, 01, 01),
+                "Warszawa", "test@test.pl", "WZK9080");
+        List<Insurance> insurance = Arrays.asList(new Insurance("Collision Damage Waiver", 1.2));
+        Cost additionalCost = new Cost("NAVIGATION_DAILY_COST", 10.0);
+        RentalOrder rd = new RentalOrder(driver, audi, 2, insurance, additionalCost);
 
-        Mockito.when(priceListService.getCostByName(CarPriceCategory.PREMIUM.getDbName()))
+        Mockito.when(costService.getCostByName(CarPriceCategory.PREMIUM.getDbName()))
                 .thenReturn(new Cost("REMIUM", 200.0));
-        Mockito.when(priceListService.getCostByName(CarInsurence.BASIC_INSURANCE.name()))
-                .thenReturn(new Cost("BASIC_INSURANCE", 1.2));
-        Mockito.when(priceListService.getCostByName(Car.Fuel.PETROL.getDbName()))
+        Mockito.when(costService.getCostByName(Car.Fuel.PETROL.getDbName()))
                 .thenReturn(new Cost("PETROL", 5.0));
 
         //When
-        Double result = costCalculator.calculateRentCost(audi, rd);
+        Double result = costCalculator.calculateRentCost(rd);
 
         //Then
         Assert.assertEquals(750.0, result, 0.0);
@@ -51,8 +60,9 @@ public class CostCalculatorTest {
         //Given
         Car audi = new Car("Audi", CarPriceCategory.PREMIUM, "WH6767", Car.Transition.AUTOMATIC,
                 Car.Fuel.PETROL, 50);
-        Mockito.when(priceListService.getCostByName(Car.Fuel.PETROL.getDbName()))
+        Mockito.when(costService.getCostByName(Car.Fuel.PETROL.getDbName()))
                 .thenReturn(new Cost("PETROL", 5.0));
+
         //When
         Double result = costCalculator.getFuelCost(audi);
 
@@ -65,13 +75,18 @@ public class CostCalculatorTest {
         //Given
         Car audi = new Car("Audi", CarPriceCategory.PREMIUM, "WH6767", Car.Transition.AUTOMATIC,
                 Car.Fuel.PETROL, 50);
-        RentalDetails rd = new RentalDetails(1, CarInsurence.BASIC_INSURANCE);
-        Mockito.when(priceListService.getCostByName(CarInsurence.BASIC_INSURANCE.name()))
-                .thenReturn(new Cost("BASIC_INSURANCE", 1.2));
+        CarDriver driver = new CarDriver("Jan", "Kowalski",
+                LocalDate.of(1970, 01, 01),
+                "Warszawa", "test@test.pl", "WZK9080");
+        List<Insurance> insurance = Arrays.asList(new Insurance("Collision Damage Waiver", 1.2), new Insurance("Personal Accident Insurance", 1.1));
+        Cost additionalCost = new Cost("NAVIGATION_DAILY_COST", 10.0);
+        RentalOrder rd = new RentalOrder(driver, audi, 2, insurance, additionalCost);
+
         //When
         Double result = costCalculator.getDailyInsuranceCost(rd, 100.0);
+
         //Then
-        Assert.assertEquals(120.0, result, 0.0);
+        Assert.assertEquals(132.0, result, 0.0);
     }
 
     @Test
@@ -79,7 +94,7 @@ public class CostCalculatorTest {
         //Given
         Car audi = new Car("Audi", CarPriceCategory.PREMIUM, "WH6767", Car.Transition.AUTOMATIC,
                 Car.Fuel.PETROL, 50);
-        Mockito.when(priceListService.getCostByName(CarPriceCategory.PREMIUM.getDbName()))
+        Mockito.when(costService.getCostByName(CarPriceCategory.PREMIUM.getDbName()))
                 .thenReturn(new Cost("PREMIUM", 200.0));
 
         //When
@@ -91,10 +106,14 @@ public class CostCalculatorTest {
 
     @Test
     public void isCalculatingAdditionalCosts() {
-        //Giben
+        //Given
         Car audi = new Car("Audi", CarPriceCategory.PREMIUM, "WH6767", Car.Transition.AUTOMATIC,
                 Car.Fuel.PETROL, 50);
-        RentalDetails rd = new RentalDetails(1, CarInsurence.BASIC_INSURANCE,
+        CarDriver driver = new CarDriver("Jan", "Kowalski",
+                LocalDate.of(1970, 01, 01),
+                "Warszawa", "test@test.pl", "WZK9080");
+        List<Insurance> insurance = Arrays.asList(new Insurance("Collision Damage Waiver", 1.2));
+        RentalOrder rd = new RentalOrder(driver, audi, 1, insurance,
                 new Cost("NAVIGATION_DAILY_COST", 10.0), new Cost("CHILD_SEAT_DAILY_COST", 15.0));
 
         //When
